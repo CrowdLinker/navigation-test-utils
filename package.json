@@ -1,8 +1,8 @@
 {
-  "name": "navigation-lib-test-utils",
+  "name": "navigation-test-utils",
   "version": "0.1.5",
   "main": "dist/index.js",
-  "module": "dist/navigation-lib-test-utils.esm.js",
+  "module": "dist/navigation-test-utils.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
