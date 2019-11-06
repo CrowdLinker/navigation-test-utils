@@ -10,12 +10,14 @@ import {
 import {
   History,
   history as globalHistory,
-  navigate as globalNavigate,
   iHistoryProvider,
 } from 'react-navigation-library';
 
+interface RenderHistoryProps extends iHistoryProvider {
+  noWrap?: boolean;
+}
 export interface NavigatorRenderOptions extends RenderOptions {
-  historyProps?: Partial<iHistoryProvider>;
+  historyProps?: Partial<RenderHistoryProps>;
 }
 
 const defaultProps: NavigatorRenderOptions = {
@@ -23,21 +25,33 @@ const defaultProps: NavigatorRenderOptions = {
   historyProps: {},
 };
 
+function EmptyWrapper({ children }: any) {
+  return children;
+}
+
 function renderWithHistory(
   ui: any,
   args: NavigatorRenderOptions = defaultProps
 ) {
-  const { options, historyProps, ...rest } = args;
+  const { options, historyProps = {}, ...rest } = args;
 
-  const utils = render(<History {...historyProps}>{ui}</History>, {
-    options: {
-      debug: {
-        omitProps: ['style', 'activeOpacity', 'activeOffsetX', 'testID'],
-        ...(options && options.debug ? options.debug : {}),
+  const { history = globalHistory, noWrap, ...props } = historyProps;
+  const Wrapper = noWrap ? EmptyWrapper : History;
+
+  const utils = render(
+    <Wrapper history={history} {...props}>
+      {ui}
+    </Wrapper>,
+    {
+      options: {
+        debug: {
+          omitProps: ['style', 'activeOpacity', 'activeOffsetX', 'testID'],
+          ...(options && options.debug ? options.debug : {}),
+        },
       },
-    },
-    ...rest,
-  });
+      ...rest,
+    }
+  );
 
   function getFocused() {
     const focusedScreen = findFocused(utils.container);
@@ -48,6 +62,10 @@ function renderWithHistory(
         return utils.debug(focusedScreen);
       },
     };
+  }
+
+  function navigate(to: string) {
+    _navigate(to, history);
   }
 
   function findFocused(parent: any): any {
@@ -73,18 +91,22 @@ function renderWithHistory(
   return {
     ...utils,
     getFocused,
+    navigate,
   };
 }
 
-function navigate(to: string) {
+function _navigate(to: string, history = globalHistory) {
   act(() => {
-    globalNavigate(to);
+    history.navigate(to);
   });
 }
 
-function cleanupHistory() {
-  globalHistory.reset();
+function cleanupHistory(history = globalHistory) {
+  history.reset();
 }
 
-// override render method
-export { renderWithHistory as render, navigate, cleanupHistory as cleanup };
+export {
+  renderWithHistory as render,
+  _navigate as navigate,
+  cleanupHistory as cleanup,
+};

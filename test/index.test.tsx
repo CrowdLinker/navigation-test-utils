@@ -1,7 +1,12 @@
 import React from 'react';
 import { render, navigate, cleanup } from '../src';
 import { Text } from 'react-native';
-import { Navigator, Tabs, history } from 'react-navigation-library';
+import {
+  Navigator,
+  Tabs,
+  history,
+  createHistory,
+} from 'react-navigation-library';
 
 let log: any;
 
@@ -99,4 +104,26 @@ test('cleanup() resets the history', () => {
 
   expect(spy).toHaveBeenCalled();
   getFocused().getByText('1');
+});
+
+test('navigate() can use a specified history', () => {
+  const myHistory = createHistory();
+  const spy = jest.spyOn(myHistory, 'navigate');
+
+  navigate('/hello-joe', myHistory);
+
+  expect(spy).toHaveBeenCalled();
+});
+
+test('cleanup() can use a specified history', () => {
+  const myHistory = createHistory();
+  const spy = jest.spyOn(myHistory, 'reset');
+
+  cleanup(myHistory);
+
+  expect(spy).toHaveBeenCalled();
+});
+
+test('noWrap option does not wrap render() history', () => {
+  render(<Text>Hi</Text>, { historyProps: { noWrap: true } });
 });
