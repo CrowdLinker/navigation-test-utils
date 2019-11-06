@@ -76,9 +76,6 @@ function renderWithHistory(
   };
 }
 
-// re-export everything
-export * from '@testing-library/react-native';
-
 function navigate(to: string) {
   act(() => {
     globalNavigate(to);
