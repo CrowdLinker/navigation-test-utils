@@ -85,9 +85,9 @@ function navigate(to: string) {
   });
 }
 
-function cleanup() {
+function cleanupHistory() {
   globalHistory.reset();
 }
 
 // override render method
-export { renderWithHistory as render, navigate, cleanup };
+export { renderWithHistory as render, navigate, cleanupHistory as cleanup };
