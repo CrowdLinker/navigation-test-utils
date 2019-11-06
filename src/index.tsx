@@ -29,7 +29,7 @@ function renderWithHistory(
 ) {
   const { options, historyProps, ...rest } = args;
 
-  const utils = render(<History {...historyProps}>{ui}</History>, {
+  const utils = render(<History>{ui}</History>, {
     options: {
       debug: {
         omitProps: ['style', 'activeOpacity', 'activeOffsetX', 'testID'],
