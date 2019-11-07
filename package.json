@@ -6,8 +6,7 @@
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
-    "cleanup-after-each.js",
-    "setup.js"
+    "cleanup-after-each.js"
   ],
   "scripts": {
     "start": "tsdx watch",
@@ -67,8 +66,7 @@
       "node_modules/(?!(react-native|react-native-screens|react-native-reanimated)/)"
     ],
     "setupFilesAfterEnv": [
-      "@testing-library/react-native/cleanup-after-each",
-      "./setup.js"
+      "@testing-library/react-native/cleanup-after-each"
     ],
     "transform": {
       "^.+\\.(t)sx?$": "ts-jest"
