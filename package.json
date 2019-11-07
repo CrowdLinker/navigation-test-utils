@@ -66,7 +66,8 @@
       "node_modules/(?!(react-native|react-native-screens|react-native-reanimated)/)"
     ],
     "setupFilesAfterEnv": [
-      "@testing-library/react-native/cleanup-after-each"
+      "@testing-library/react-native/cleanup-after-each",
+      "./mock.js"
     ],
     "transform": {
       "^.+\\.(t)sx?$": "ts-jest"
