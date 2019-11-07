@@ -25,6 +25,16 @@ const defaultProps: NavigatorRenderOptions = {
   historyProps: {},
 };
 
+const defaults = {
+  omitProps: [
+    'style',
+    'activeOpacity',
+    'activeOffsetX',
+    'pointerEvents',
+    'collapsable',
+  ],
+};
+
 function EmptyWrapper({ children }: any) {
   return children;
 }
@@ -45,7 +55,7 @@ function renderWithHistory(
     {
       options: {
         debug: {
-          omitProps: ['style', 'activeOpacity', 'activeOffsetX', 'testID'],
+          omitProps: defaults.omitProps,
           ...(options && options.debug ? options.debug : {}),
         },
       },
@@ -109,4 +119,5 @@ export {
   renderWithHistory as render,
   _navigate as navigate,
   cleanupHistory as cleanup,
+  defaults,
 };

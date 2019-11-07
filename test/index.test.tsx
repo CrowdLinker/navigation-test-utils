@@ -17,8 +17,8 @@ beforeEach(() => {
 function Test() {
   return (
     <Navigator routes={['1', '2']}>
-      <Tabs style={{ width: 1 }}>
-        <Text testID="123">1</Text>
+      <Tabs>
+        <Text style={{ fontWeight: 'bold' }}>1</Text>
         <Text>2</Text>
       </Tabs>
     </Navigator>
@@ -35,7 +35,7 @@ test('render works', () => {
   const { getFocused } = render(<Test />);
 
   getFocused().debug();
-  expect(!log.includes('testID')).toBe(true);
+  expect(log.includes('style')).toBe(false);
 
   expect(log).toMatchInlineSnapshot(`
     "[36m<View[39m
@@ -45,6 +45,7 @@ test('render works', () => {
           \\"selected\\",
         ]
       }[39m
+      [33mtestID[39m=[32m\\"rnl-screen\\"[39m
     [36m>[39m
       [36m<Text>[39m
         [0m1[0m
@@ -70,9 +71,7 @@ test('render opts can be overridden', () => {
       }[39m
       [33mtestID[39m=[32m\\"rnl-screen\\"[39m
     [36m>[39m
-      [36m<Text[39m
-        [33mtestID[39m=[32m\\"123\\"[39m
-      [36m>[39m
+      [36m<Text>[39m
         [0m1[0m
       [36m</Text>[39m
     [36m</View>[39m"
