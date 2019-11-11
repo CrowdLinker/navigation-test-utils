@@ -34,6 +34,9 @@ const defaults = {
     'activeOffsetX',
     'pointerEvents',
     'collapsable',
+    'underlineColorAndroid',
+    'rejectResponderTermination',
+    'allowFontScaling',
   ],
 };
 
