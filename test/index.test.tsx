@@ -1,12 +1,13 @@
 import React from 'react';
-import { render, navigate, cleanup } from '../src';
-import { Text } from 'react-native';
+import { render, navigate, cleanup, findFocused } from '../src';
+import { Text, View } from 'react-native';
 import {
   Navigator,
   Tabs,
   history,
   createHistory,
 } from 'react-navigation-library';
+import { getByText } from '@testing-library/react-native';
 
 let log: any;
 
@@ -125,4 +126,47 @@ test('cleanup() can use a specified history', () => {
 
 test('noWrap option does not wrap render() history', () => {
   render(<Text>Hi</Text>, { historyProps: { noWrap: true } });
+});
+
+test('findFocused() returns the deepest selected node', () => {
+  const { container, rerender } = render(
+    <View testID="rnl-screen" accessibilityStates={['selected']}>
+      <View testID="rnl-screen" accessibilityStates={['disabled']}>
+        <View testID="rnl-screen" accessibilityStates={['selected']}>
+          <Text testID="rnl-screen" accessibilityStates={['selected']}>
+            I am not focused
+          </Text>
+        </View>
+      </View>
+
+      <View testID="rnl-screen" accessibilityStates={['selected']}>
+        <Text>I am focused</Text>
+      </View>
+    </View>
+  );
+
+  let focused = findFocused(container);
+  getByText(focused, 'I am focused');
+
+  expect(() => getByText(focused, 'I am not focused')).toThrow();
+
+  rerender(
+    <View testID="rnl-screen" accessibilityStates={['selected']}>
+      <View testID="rnl-screen" accessibilityStates={['selected']}>
+        <View testID="rnl-screen" accessibilityStates={['selected']}>
+          <Text testID="rnl-screen" accessibilityStates={['selected']}>
+            I am now focused
+          </Text>
+        </View>
+      </View>
+
+      <View testID="rnl-screen" accessibilityStates={['disabled']}>
+        <Text>I am not focused anymore</Text>
+      </View>
+    </View>
+  );
+
+  focused = findFocused(container);
+  getByText(focused, 'I am now focused');
+  expect(() => getByText(focused, 'I am not focused anymore')).toThrow();
 });

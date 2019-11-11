@@ -5,6 +5,8 @@ import {
   act,
   getAllByTestId,
   RenderOptions,
+  ReactTestInstance,
+  NativeTestInstance,
 } from '@testing-library/react-native';
 
 import {
@@ -78,31 +80,29 @@ function renderWithHistory(
     _navigate(to, history);
   }
 
-  function findFocused(parent: any): any {
-    const focusedScreens = getAllByTestId(parent, 'rnl-screen', {
-      selector: ({ props }) =>
-        props.accessibilityStates &&
-        props.accessibilityStates.includes('selected'),
-    });
-
-    if (focusedScreens.length > 1) {
-      if (parent === focusedScreens[0]) {
-        if (focusedScreens[1]) {
-          return findFocused(focusedScreens[1]);
-        }
-      }
-
-      return findFocused(focusedScreens[0]);
-    }
-
-    return focusedScreens[0];
-  }
-
   return {
     ...utils,
     getFocused,
     navigate,
   };
+}
+
+function findFocused(container: NativeTestInstance): NativeTestInstance {
+  const screens = getAllByTestId(container, 'rnl-screen', {
+    selector: ({ props, parent }) => {
+      const parentFocused =
+        parent.props.accessibilityStates &&
+        parent.props.accessibilityStates.includes('selected');
+
+      const childFocused =
+        props.accessibilityStates &&
+        props.accessibilityStates.includes('selected');
+
+      return parentFocused && childFocused;
+    },
+  });
+
+  return screens[screens.length - 1];
 }
 
 function _navigate(to: string, history = globalHistory) {
@@ -120,4 +120,5 @@ export {
   _navigate as navigate,
   cleanupHistory as cleanup,
   defaults,
+  findFocused,
 };
