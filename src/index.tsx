@@ -13,7 +13,7 @@ import {
   History,
   history as globalHistory,
   iHistoryProvider,
-} from 'react-navigation-library';
+} from 'navigation-components';
 
 interface RenderHistoryProps extends iHistoryProvider {
   noWrap?: boolean;

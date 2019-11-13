@@ -1,12 +1,7 @@
 import React from 'react';
 import { render, navigate, cleanup, findFocused } from '../src';
 import { Text, View } from 'react-native';
-import {
-  Navigator,
-  Tabs,
-  history,
-  createHistory,
-} from 'react-navigation-library';
+import { Navigator, Tabs, history, createHistory } from 'navigation-components';
 import { getByText } from '@testing-library/react-native';
 
 let log: any;

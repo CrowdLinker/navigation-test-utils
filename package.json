@@ -56,7 +56,7 @@
   "dependencies": {
     "@testing-library/jest-native": "^3.0.2",
     "@testing-library/react-native": "^5.0.0",
-    "react-navigation-library": "^0.2.6"
+    "navigation-components": "^0.2.17"
   },
   "jest": {
     "preset": "@testing-library/react-native",

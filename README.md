@@ -1,6 +1,6 @@
 # navigation-test-utils
 
-A utility library for testing w/ react-navigation-library
+A utility library for testing w/ navigation-components
 
 Provides some nice additions to the `@testing-library/react-native` `render()` method, as well as out of the box mocks to get up and running quickly with jest
 
@@ -12,7 +12,7 @@ yarn add navigation-test-utils
 
 ## Dependencies
 
-react-navigation-library and this utility library share peer dependencies:
+navigation-components and this utility library share peer dependencies:
 
 ```bash
 yarn add react-native-gesture-handler react-native-screens react-native-reanimated
