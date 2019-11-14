@@ -1,22 +1,27 @@
 import React from 'react';
 import { render, navigate, cleanup, findFocused } from '../src';
 import { Text, View } from 'react-native';
-import { Navigator, Tabs, history, createHistory } from 'navigation-components';
-import { getByText } from '@testing-library/react-native';
+import {
+  Navigator,
+  Tabs,
+  history,
+  createHistory,
+  useLocation,
+} from 'navigation-components';
+import { getByText, act } from '@testing-library/react-native';
 
 let log: any;
 
-beforeEach(() => {
-  jest.spyOn(console, 'log').mockImplementation(output => (log = output));
-});
-
 function Test() {
+  const location = useLocation();
   return (
     <Navigator routes={['1', '2']}>
       <Tabs>
         <Text style={{ fontWeight: 'bold' }}>1</Text>
         <Text>2</Text>
       </Tabs>
+
+      <Text>{location}</Text>
     </Navigator>
   );
 }
@@ -24,10 +29,12 @@ function Test() {
 afterEach(() => {
   log = undefined;
   // @ts-ignore
-  console.log.mockRestore();
+  // console.log.mockRestore();
 });
 
 test('render works', () => {
+  jest.spyOn(console, 'log').mockImplementation(output => (log = output));
+
   const { getFocused } = render(<Test />);
 
   getFocused().debug();
@@ -48,9 +55,14 @@ test('render works', () => {
       [36m</Text>[39m
     [36m</View>[39m"
   `);
+
+  // @ts-ignore
+  console.log.mockRestore();
 });
 
 test('render opts can be overridden', () => {
+  jest.spyOn(console, 'log').mockImplementation(output => (log = output));
+
   const { getFocused } = render(<Test />, {
     options: { debug: { omitProps: ['style'] } },
   });
@@ -72,6 +84,9 @@ test('render opts can be overridden', () => {
       [36m</Text>[39m
     [36m</View>[39m"
   `);
+
+  // @ts-ignore
+  console.log.mockRestore();
 });
 
 test('navigate() calls work', () => {
@@ -90,15 +105,11 @@ test('navigate() calls work', () => {
 test('cleanup() resets the history', () => {
   const spy = jest.spyOn(history, 'reset');
 
-  const { getFocused, rerender } = render(<Test />);
-
   navigate('/2');
   cleanup();
 
-  rerender(<Test />);
-
   expect(spy).toHaveBeenCalled();
-  getFocused().getByText('1');
+  expect(history.location).toEqual('/');
 });
 
 test('navigate() can use a specified history', () => {
@@ -126,7 +137,7 @@ test('noWrap option does not wrap render() history', () => {
 test('findFocused() returns the deepest selected node', () => {
   const { container, rerender } = render(
     <View testID="rnl-screen" accessibilityStates={['selected']}>
-      <View testID="rnl-screen" accessibilityStates={['disabled']}>
+      <View testID="rnl-screen" accessibilityStates={['selected']}>
         <View testID="rnl-screen" accessibilityStates={['selected']}>
           <Text testID="rnl-screen" accessibilityStates={['selected']}>
             I am not focused

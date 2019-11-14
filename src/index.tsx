@@ -54,10 +54,10 @@ function renderWithHistory(
   const Wrapper = noWrap ? EmptyWrapper : History;
 
   const utils = render(
-    <Wrapper history={history} {...props}>
-      {ui}
-    </Wrapper>,
+    ui,
+
     {
+      wrapper: Wrapper as any,
       options: {
         debug: {
           omitProps: defaults.omitProps,
@@ -91,17 +91,14 @@ function renderWithHistory(
 }
 
 function findFocused(container: NativeTestInstance): NativeTestInstance {
+  // TODO -- this needs to be updated as it doesn't descriminate for children with a disabled parent
+  // it shouldn't be possible w/ navigation-components for now but it might break in the future
   const screens = getAllByTestId(container, 'rnl-screen', {
-    selector: ({ props, parent }) => {
-      const parentFocused =
-        parent.props.accessibilityStates &&
-        parent.props.accessibilityStates.includes('selected');
-
-      const childFocused =
+    selector: ({ props }) => {
+      return (
         props.accessibilityStates &&
-        props.accessibilityStates.includes('selected');
-
-      return parentFocused && childFocused;
+        props.accessibilityStates.includes('selected')
+      );
     },
   });
 
@@ -115,9 +112,10 @@ function _navigate(to: string, history = globalHistory) {
 }
 
 function cleanupHistory(history = globalHistory) {
-  history.reset();
+  act(() => {
+    history.reset();
+  });
 }
-
 export {
   renderWithHistory as render,
   _navigate as navigate,
