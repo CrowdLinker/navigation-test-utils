@@ -8,7 +8,11 @@ import {
   createHistory,
   useLocation,
 } from 'navigation-components';
-import { getByText, act } from '@testing-library/react-native';
+import {
+  getByText,
+  act,
+  render as RNTLRender,
+} from '@testing-library/react-native';
 
 let log: any;
 
@@ -135,18 +139,18 @@ test('noWrap option does not wrap render() history', () => {
 });
 
 test('findFocused() returns the deepest selected node', () => {
-  const { container, rerender } = render(
+  const { container, rerender, debug } = render(
     <View testID="rnl-screen" accessibilityStates={['selected']}>
       <View testID="rnl-screen" accessibilityStates={['selected']}>
-        <View testID="rnl-screen" accessibilityStates={['selected']}>
-          <Text testID="rnl-screen" accessibilityStates={['selected']}>
-            I am not focused
-          </Text>
-        </View>
+        <Text testID="rnl-screen" accessibilityStates={['disabled']}>
+          I am not focused
+        </Text>
       </View>
 
       <View testID="rnl-screen" accessibilityStates={['selected']}>
-        <Text>I am focused</Text>
+        <Text testID="rnl-screen" accessibilityStates={['selected']}>
+          I am focused
+        </Text>
       </View>
     </View>
   );
@@ -167,12 +171,15 @@ test('findFocused() returns the deepest selected node', () => {
       </View>
 
       <View testID="rnl-screen" accessibilityStates={['disabled']}>
-        <Text>I am not focused anymore</Text>
+        <View testID="rnl-screen" accessibilityStates={['selected']}>
+          <Text>I am not focused anymore</Text>
+        </View>
       </View>
     </View>
   );
 
   focused = findFocused(container);
+
   getByText(focused, 'I am now focused');
   expect(() => getByText(focused, 'I am not focused anymore')).toThrow();
 });
