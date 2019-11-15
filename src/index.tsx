@@ -94,59 +94,23 @@ function renderWithHistory(
 }
 
 function findFocused(container: NativeTestInstance): NativeTestInstance {
-  // TODO -- this needs to be updated as it doesn't descriminate for children with a disabled parent
-  // it shouldn't be possible w/ navigation-components for now but it might break in the future
-  let screens = getScreens(container);
+  let screens = queryAllByTestId(container, /rnl-screen/i);
 
-  if (screens.length === 0) {
-    return container;
-  }
-
-  // find subscreen with the fewest amount of child screens
+  let maxDepth = 0;
   let matchIndex = 0;
-  let minDepth = Number.MAX_SAFE_INTEGER;
 
+  // finds rnl-screen with the highest focus depth in the tree
   for (let i = 0; i < screens.length; i++) {
-    const subscreens = queryAllByTestId(screens[i], 'rnl-screen');
-    const depth = subscreens.length;
+    const screen = screens[i];
+    const depth = parseInt(screen.props.testID.replace(/^\D+/g, ''));
 
-    if (depth <= minDepth) {
-      minDepth = depth;
+    if (depth >= maxDepth) {
       matchIndex = i;
+      maxDepth = depth;
     }
   }
 
   return screens[matchIndex];
-}
-
-// findAll() walks the tree in order, not via node heirarchy
-// that means that selected screens that are children of disabled screens are tough to filter out
-// otherwise some kind of recursive function could walk the tree
-function getScreens(container: NativeTestInstance) {
-  let screens = queryAllByTestId(container, 'rnl-screen', {
-    selector: ({ props }) =>
-      props.accessibilityStates &&
-      props.accessibilityStates.includes('selected'),
-  });
-
-  if (screens.length > 1) {
-    // screens[0] is the container itself
-    const disabledScreens = queryAllByTestId(screens[1], 'rnl-screen', {
-      selector: ({ props }) =>
-        props.accessibilityStates &&
-        props.accessibilityStates.includes('disabled'),
-    });
-
-    // remove any descendent nodes that are selected, but are the child of a disabled screen
-    if (disabledScreens.length > 0) {
-      disabledScreens.forEach(disabledContainer => {
-        const childNodes = getScreens(disabledContainer).map(s => s._fiber);
-        screens = screens.filter(node => !childNodes.includes(node._fiber));
-      });
-    }
-  }
-
-  return screens;
 }
 
 function _navigate(to: string, history = globalHistory) {
