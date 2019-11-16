@@ -167,8 +167,6 @@ const ntlFireEvent = {
   androidBackPress,
 };
 
-export * from '@testing-library/react-native';
-
 export {
   renderWithHistory as render,
   _navigate as navigate,
