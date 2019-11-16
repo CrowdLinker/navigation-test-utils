@@ -1,6 +1,6 @@
 {
   "name": "navigation-test-utils",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "main": "dist/index.js",
   "module": "dist/navigation-test-utils.esm.js",
   "typings": "dist/index.d.ts",
