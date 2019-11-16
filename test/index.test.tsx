@@ -48,7 +48,7 @@ test('render works', () => {
               \\"selected\\",
             ]
           }[39m
-          [33mtestID[39m=[32m\\"rnl-screen\\"[39m
+          [33mtestID[39m=[32m\\"rnl-screen-1\\"[39m
         [36m>[39m
           [36m<View[39m
             [33maccessibilityStates[39m=[32m{
@@ -102,7 +102,7 @@ test('render opts can be overridden', () => {
               \\"selected\\",
             ]
           }[39m
-          [33mtestID[39m=[32m\\"rnl-screen\\"[39m
+          [33mtestID[39m=[32m\\"rnl-screen-1\\"[39m
         [36m>[39m
           [36m<View[39m
             [33maccessibilityStates[39m=[32m{
