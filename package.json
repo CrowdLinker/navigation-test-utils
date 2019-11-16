@@ -64,6 +64,10 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example"
     ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|react-native-screens|react-native-reanimated)/)"
     ],

@@ -1,15 +1,14 @@
 import React from 'react';
+import { Linking, BackHandler } from 'react-native';
+
 import {
   render,
   getQueriesForElement,
   act,
-  getAllByTestId,
   RenderOptions,
-  ReactTestInstance,
   NativeTestInstance,
-  prettyPrint,
-  getByHintText,
   queryAllByTestId,
+  fireEvent,
 } from '@testing-library/react-native';
 
 import {
@@ -125,10 +124,56 @@ function cleanupHistory(history = globalHistory) {
   });
 }
 
+jest.mock('react-native/Libraries/Linking/Linking', () => {
+  let callbacks: any[] = [];
+
+  return {
+    openLink: ({ url }: { url: string }) => callbacks.map(cb => cb({ url })),
+    getInitialURL: jest.fn().mockResolvedValue(''),
+    addEventListener: (_: string, cb: Function) => callbacks.push(cb),
+    removeEventListener: (_: string, cb: Function) =>
+      (callbacks = callbacks.filter(c => c !== cb)),
+  };
+});
+
+jest.mock('react-native/Libraries/Utilities/BackHandler', () => {
+  let callbacks: any[] = [];
+
+  return {
+    backPress: () => callbacks.map(cb => cb()),
+    addEventListener: (_: string, cb: Function) => callbacks.push(cb),
+    removeEventListener: (_: string, cb: Function) =>
+      (callbacks = callbacks.filter(c => c !== cb)),
+  };
+});
+
+function openLink(url: string) {
+  act(() => {
+    // @ts-ignore
+    Linking.openLink({ url });
+  });
+}
+
+function androidBackPress() {
+  act(() => {
+    // @ts-ignore
+    BackHandler.backPress();
+  });
+}
+
+const ntlFireEvent = {
+  ...fireEvent,
+  openLink,
+  androidBackPress,
+};
+
+export * from '@testing-library/react-native';
+
 export {
   renderWithHistory as render,
   _navigate as navigate,
   cleanupHistory as cleanup,
   defaults,
   findFocused,
+  ntlFireEvent as fireEvent,
 };

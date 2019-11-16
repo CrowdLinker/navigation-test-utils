@@ -1,13 +1,7 @@
 import React from 'react';
-import { render, navigate, cleanup, findFocused } from '../src';
+import { render, navigate, cleanup, findFocused, fireEvent } from '../src';
 import { Text, View } from 'react-native';
-import {
-  Navigator,
-  Tabs,
-  history,
-  createHistory,
-  useLocation,
-} from 'navigation-components';
+import { history, createHistory } from 'navigation-components';
 import {
   getByText,
   act,
@@ -224,4 +218,12 @@ test('findFocused() returns the deepest selected node', () => {
 
   getByText(focused, 'I am now focused');
   expect(() => getByText(focused, 'I am not focused anymore')).toThrow();
+});
+
+test('backPress() works', () => {
+  fireEvent.androidBackPress();
+});
+
+test('openLink() works', () => {
+  fireEvent.openLink('testest');
 });
